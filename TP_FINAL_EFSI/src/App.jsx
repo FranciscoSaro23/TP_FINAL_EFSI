@@ -1,36 +1,30 @@
-// App.js
-import React, { useState, useEffect } from 'react';
-import useLocalStorage from './hooks/useLocalStorage';
-import Listado from './components/Listado';
+import { useState } from 'react'
+import Header from './components/Header'
+import Listado from './pages/Listado'
+import Nuevo from './pages/Nuevo'
+import Editar from './pages/Editar'
+import Resumen from './pages/Resumen'
+import Ajustes from './pages/Ajustes'
 
-const App = () => {
-  const [theme, setTheme] = useLocalStorage('theme', 'light'); // 'light' o 'dark'
+function App() {
+  const [ruta, setRuta] = useState('/') // navegación manual simple
 
-  const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
-  };
-
-  useEffect(() => {
-    document.body.className = theme; // Cambiar el tema en el body de la página
-  }, [theme]);
+  const renderPage = () => {
+    switch (ruta) {
+      case '/nuevo': return <Nuevo cambiarRuta={setRuta} />
+      case '/editar': return <Editar cambiarRuta={setRuta} />
+      case '/resumen': return <Resumen cambiarRuta={setRuta} />
+      case '/ajustes': return <Ajustes cambiarRuta={setRuta} />
+      default: return <Listado cambiarRuta={setRuta} />
+    }
+  }
 
   return (
-    <div className={`App ${theme}`}>
-      <header>
-        <h1>Mi Aplicación</h1>
-        <button onClick={toggleTheme}>Cambiar Tema</button>
-      </header>
-      <nav>
-        <ul>
-          <li>Inicio</li>
-          <li>Listado</li>
-        </ul>
-      </nav>
-      <main>
-        <Listado />
-      </main>
+    <div>
+      <Header cambiarRuta={setRuta} />
+      <main>{renderPage()}</main>
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App
