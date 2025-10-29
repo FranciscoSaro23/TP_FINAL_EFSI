@@ -1,12 +1,16 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 
 export const MovimientosContext = createContext();
+
+export function useMovimientos() {
+  return useContext(MovimientosContext);
+}
 
 export default function MovimientosProvider({ children }) {
   const [movimientos, setMovimientos] = useState(
     JSON.parse(localStorage.getItem("movimientos")) || [
       { id: 1, tipo: "ingreso", monto: 5000, categoria: "Sueldo", descripcion: "Pago mensual", fecha: "2025-10-01" },
-      { id: 2, tipo: "gasto", monto: 1200, categoria: "Comida", descripcion: "Supermercado", fecha: "2025-10-05" },
+      { id: 2, tipo: "gasto", monto: 1200, categoria: "Alimentación", descripcion: "Supermercado", fecha: "2025-10-05" },
     ]
   );
 
@@ -15,11 +19,20 @@ export default function MovimientosProvider({ children }) {
   }, [movimientos]);
 
   const agregarMovimiento = (nuevoMovimiento) => {
-    setMovimientos([...movimientos, { ...nuevoMovimiento, id: Date.now() }]);
+    const id = Date.now();
+    setMovimientos([...movimientos, { ...nuevoMovimiento, id }]);
   };
 
   const eliminarMovimiento = (id) => {
-    setMovimientos(movimientos.filter((m) => m.id !== id));
+    const numericId = typeof id === "string" ? Number(id) : id;
+    setMovimientos(movimientos.filter((m) => m.id !== numericId));
+  };
+
+  const editarMovimiento = (id, cambios) => {
+    const numericId = typeof id === "string" ? Number(id) : id;
+    setMovimientos(
+      movimientos.map((m) => (m.id === numericId ? { ...m, ...cambios, id: m.id } : m))
+    );
   };
 
   const balanceTotal = movimientos.reduce(
@@ -29,7 +42,7 @@ export default function MovimientosProvider({ children }) {
 
   return (
     <MovimientosContext.Provider
-      value={{ movimientos, agregarMovimiento, eliminarMovimiento, balanceTotal }}
+      value={{ movimientos, agregarMovimiento, eliminarMovimiento, editarMovimiento, balanceTotal }}
     >
       {children}
     </MovimientosContext.Provider>

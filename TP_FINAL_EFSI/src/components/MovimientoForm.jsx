@@ -1,106 +1,83 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { Formik, Form, Field, ErrorMessage } from 'formik'
+import * as Yup from 'yup'
 
-function validar(vals) {
-  const errors = {}
-  if (!vals.descripcion || vals.descripcion.trim().length < 3)
-    errors.descripcion = 'La descripción debe tener al menos 3 caracteres.'
-  if (!vals.categoria)
-    errors.categoria = 'Debes seleccionar una categoría.'
-  if (!['ingreso', 'gasto'].includes(vals.tipo))
-    errors.tipo = 'Debes elegir tipo ingreso o gasto.'
-  if (vals.monto === '' || isNaN(Number(vals.monto)) || Number(vals.monto) <= 0)
-    errors.monto = 'El monto debe ser un número positivo.'
-  if (!vals.fecha)
-    errors.fecha = 'La fecha es obligatoria.'
-  else {
-    const f = new Date(vals.fecha)
-    const hoy = new Date()
-    hoy.setHours(0, 0, 0, 0)
-    if (f > hoy) errors.fecha = 'La fecha no puede ser futura.'
-  }
-  return errors
+const validationSchema = Yup.object({
+  descripcion: Yup.string().trim().min(3, 'Mínimo 3 caracteres').required('Requerido'),
+  categoria: Yup.string().required('Requerido'),
+  tipo: Yup.mixed().oneOf(['ingreso', 'gasto'], 'Selecciona ingreso o gasto').required('Requerido'),
+  monto: Yup.number().typeError('Debe ser número').positive('Debe ser positivo').required('Requerido'),
+  fecha: Yup.date()
+    .max(new Date(), 'La fecha no puede ser futura')
+    .required('Requerido')
+})
+
+const defaultValues = {
+  descripcion: '',
+  categoria: '',
+  tipo: '',
+  monto: '',
+  fecha: ''
 }
 
 export default function MovimientoForm({ initialValues, onSubmit, onCancel }) {
-  const [vals, setVals] = useState(initialValues)
-  const [errors, setErrors] = useState({})
-
-  function handleChange(e) {
-    const { name, value } = e.target
-    setVals({ ...vals, [name]: value })
-  }
-
-  function handleSubmit(e) {
-    e.preventDefault()
-    const errs = validar(vals)
-    setErrors(errs)
-    if (Object.keys(errs).length === 0) {
-      onSubmit({ ...vals, monto: Number(vals.monto) })
-    }
-  }
-
+  const init = initialValues || defaultValues
   return (
-    <form className="form" onSubmit={handleSubmit}>
-      <label>
-        Descripción
-        <input
-          name="descripcion"
-          value={vals.descripcion}
-          onChange={handleChange}
-          placeholder="Ej: Supermercado"
-        />
-        {errors.descripcion && <small className="error">{errors.descripcion}</small>}
-      </label>
+    <Formik
+      initialValues={init}
+      validationSchema={validationSchema}
+      onSubmit={(values) => onSubmit({ ...values, monto: Number(values.monto) })}
+      enableReinitialize
+    >
+      {() => (
+        <Form className="form">
+          <label>
+            Descripción
+            <Field name="descripcion" placeholder="Ej: Supermercado" />
+            <ErrorMessage name="descripcion" component="small" className="error" />
+          </label>
 
-      <label>
-        Categoría
-        <select name="categoria" value={vals.categoria} onChange={handleChange}>
-          <option value="">Seleccionar</option>
-          <option>Alimentación</option>
-          <option>Transporte</option>
-          <option>Ocio</option>
-          <option>Sueldo</option>
-          <option>Servicios</option>
-        </select>
-        {errors.categoria && <small className="error">{errors.categoria}</small>}
-      </label>
+          <label>
+            Categoría
+            <Field as="select" name="categoria">
+              <option value="">Seleccionar</option>
+              <option>Alimentación</option>
+              <option>Transporte</option>
+              <option>Ocio</option>
+              <option>Sueldo</option>
+              <option>Servicios</option>
+            </Field>
+            <ErrorMessage name="categoria" component="small" className="error" />
+          </label>
 
-      <label>
-        Tipo
-        <select name="tipo" value={vals.tipo} onChange={handleChange}>
-          <option value="">Seleccionar</option>
-          <option value="ingreso">Ingreso</option>
-          <option value="gasto">Gasto</option>
-        </select>
-        {errors.tipo && <small className="error">{errors.tipo}</small>}
-      </label>
+          <label>
+            Tipo
+            <Field as="select" name="tipo">
+              <option value="">Seleccionar</option>
+              <option value="ingreso">Ingreso</option>
+              <option value="gasto">Gasto</option>
+            </Field>
+            <ErrorMessage name="tipo" component="small" className="error" />
+          </label>
 
-      <label>
-        Monto
-        <input
-          name="monto"
-          type="number"
-          value={vals.monto}
-          onChange={handleChange}
-        />
-        {errors.monto && <small className="error">{errors.monto}</small>}
-      </label>
+          <label>
+            Monto
+            <Field name="monto" type="number" />
+            <ErrorMessage name="monto" component="small" className="error" />
+          </label>
 
-      <label>
-        Fecha
-        <input
-          name="fecha"
-          type="date"
-          value={vals.fecha}
-          onChange={handleChange}
-        />
-        {errors.fecha && <small className="error">{errors.fecha}</small>}
-      </label>
+          <label>
+            Fecha
+            <Field name="fecha" type="date" />
+            <ErrorMessage name="fecha" component="small" className="error" />
+          </label>
 
-      <div className="formActions">
-        <button type="submit" className="btn">Guardar</button>
-        <button type="button" className="btn" onClick={onCancel}>Cancelar</button>
-      </div>
-    </form>
+          <div className="formActions">
+            <button type="submit" className="btn">Guardar</button>
+            <button type="button" className="btn" onClick={onCancel}>Cancelar</button>
+          </div>
+        </Form>
+      )}
+    </Formik>
   )
 }

@@ -1,31 +1,24 @@
 import React from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import MovimientoForm from '../components/MovimientoForm'
 import { useMovimientos } from '../context/MovimientosContext'
 
-function getId() {
-  const params = new URLSearchParams(window.location.search)
-  return params.get('id')
-}
-
-function navigate(to) {
-  window.history.pushState({}, '', to)
-  window.dispatchEvent(new PopStateEvent('popstate'))
-}
-
 export default function Editar() {
+  const { id } = useParams()
+  const navigate = useNavigate()
   const { movimientos, editarMovimiento } = useMovimientos()
-  const id = getId()
-  const m = movimientos.find(x => x.id === id)
+  const numericId = Number(id)
+  const movimiento = movimientos.find((x) => x.id === numericId)
 
-  if (!m) return <p>Movimiento no encontrado.</p>
+  if (!movimiento) return <p>Movimiento no encontrado.</p>
 
   return (
     <div>
       <h2>Editar Movimiento</h2>
       <MovimientoForm
-        initialValues={m}
+        initialValues={movimiento}
         onSubmit={(vals) => {
-          editarMovimiento(id, vals)
+          editarMovimiento(numericId, vals)
           navigate('/')
         }}
         onCancel={() => navigate('/')}

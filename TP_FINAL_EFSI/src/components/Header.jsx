@@ -1,15 +1,16 @@
-import { useState } from "react";
 import "./Header.css";
 import NavLink from "./NavLink";
 
-export default function Header({ toggleTheme }) {
+export default function Header({ toggleTheme, darkMode }) {
   return (
     <header className="header">
-      <h1>Mi Aplicación</h1>
-      <button onClick={toggleTheme}>Cambiar Tema</button>
+      <h1>Mi Presupuesto</h1>
+      <button onClick={toggleTheme}>{darkMode ? 'Modo claro' : 'Modo oscuro'}</button>
       <div className="nav-buttons">
-        <NavLink to="/">Inicio</NavLink>
-        <NavLink to="/listado">Listado</NavLink>
+        <NavLink to="/">Listado</NavLink>
+        <NavLink to="/nuevo">Nuevo</NavLink>
+        <NavLink to="/resumen">Resumen</NavLink>
+        <NavLink to="/ajustes">Ajustes</NavLink>
       </div>
     </header>
   );
