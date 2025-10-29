@@ -1,29 +1,15 @@
 import { useState } from "react";
 import "./Header.css";
+import NavLink from "./NavLink";
 
-export default function Header({ toggleTheme, darkMode }) {
-  const [active, setActive] = useState("home");
-
+export default function Header({ toggleTheme }) {
   return (
     <header className="header">
-      <div className="header-container">
-        <h1 className="header-title">Mi Sitio</h1>
-
-        <nav className="nav">
-          {["home", "sobre mí", "contacto"].map((item) => (
-            <button
-              key={item}
-              onClick={() => setActive(item)}
-              className={`nav-item ${active === item ? "active" : ""}`}
-            >
-              {item}
-            </button>
-          ))}
-        </nav>
-
-        <button onClick={toggleTheme} className="theme-button">
-          {darkMode ? "CLARO" : "OSCURO"}
-        </button>
+      <h1>Mi Aplicación</h1>
+      <button onClick={toggleTheme}>Cambiar Tema</button>
+      <div className="nav-buttons">
+        <NavLink to="/">Inicio</NavLink>
+        <NavLink to="/listado">Listado</NavLink>
       </div>
     </header>
   );
