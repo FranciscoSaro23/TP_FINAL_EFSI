@@ -1,53 +1,37 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
-import useLocalStorage from '../hooks/useLocalStorage'
+import { createContext, useState, useEffect } from "react";
 
-const MovimientosContext = createContext()
+export const MovimientosContext = createContext();
 
-export function MovimientosProvider({ children }) {
-  const [movimientos, setMovimientos] = useLocalStorage('movimientos', [])
+export default function MovimientosProvider({ children }) {
+  const [movimientos, setMovimientos] = useState(
+    JSON.parse(localStorage.getItem("movimientos")) || [
+      { id: 1, tipo: "ingreso", monto: 5000, categoria: "Sueldo", descripcion: "Pago mensual", fecha: "2025-10-01" },
+      { id: 2, tipo: "gasto", monto: 1200, categoria: "Comida", descripcion: "Supermercado", fecha: "2025-10-05" },
+    ]
+  );
 
-  const agregarMovimiento = (movimiento) => {
-    const nuevoMovimiento = {
-      ...movimiento,
-      id: Date.now().toString(),
-      fecha: new Date().toISOString().split('T')[0]
-    }
-    setMovimientos(prev => [...prev, nuevoMovimiento])
-  }
+  useEffect(() => {
+    localStorage.setItem("movimientos", JSON.stringify(movimientos));
+  }, [movimientos]);
 
-  const editarMovimiento = (id, datos) => {
-    setMovimientos(prev => 
-      prev.map(m => m.id === id ? { ...m, ...datos } : m)
-    )
-  }
+  const agregarMovimiento = (nuevoMovimiento) => {
+    setMovimientos([...movimientos, { ...nuevoMovimiento, id: Date.now() }]);
+  };
 
   const eliminarMovimiento = (id) => {
-    setMovimientos(prev => prev.filter(m => m.id !== id))
-  }
+    setMovimientos(movimientos.filter((m) => m.id !== id));
+  };
 
-  const obtenerMovimiento = (id) => {
-    return movimientos.find(m => m.id === id)
-  }
-
-  const value = {
-    movimientos,
-    agregarMovimiento,
-    editarMovimiento,
-    eliminarMovimiento,
-    obtenerMovimiento
-  }
+  const balanceTotal = movimientos.reduce(
+    (acc, m) => (m.tipo === "ingreso" ? acc + m.monto : acc - m.monto),
+    0
+  );
 
   return (
-    <MovimientosContext.Provider value={value}>
+    <MovimientosContext.Provider
+      value={{ movimientos, agregarMovimiento, eliminarMovimiento, balanceTotal }}
+    >
       {children}
     </MovimientosContext.Provider>
-  )
-}
-
-export function useMovimientos() {
-  const context = useContext(MovimientosContext)
-  if (!context) {
-    throw new Error('useMovimientos debe ser usado dentro de MovimientosProvider')
-  }
-  return context
+  );
 }

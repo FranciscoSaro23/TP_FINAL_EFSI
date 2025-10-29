@@ -2,33 +2,13 @@ import React from 'react'
 import MovimientoForm from '../components/MovimientoForm'
 import { useMovimientos } from '../context/MovimientosContext'
 
-function navigate(to) {
-  window.history.pushState({}, '', to)
-  window.dispatchEvent(new PopStateEvent('popstate'))
-}
+import MovimientoForm from "../components/MovimientoForm";
 
 export default function Nuevo() {
-  const { agregarMovimiento } = useMovimientos()
-
-  const initialValues = {
-    descripcion: '',
-    categoria: '',
-    tipo: '',
-    monto: '',
-    fecha: ''
-  }
-
   return (
-    <div>
-      <h2>Nuevo Movimiento</h2>
-      <MovimientoForm
-        initialValues={initialValues}
-        onSubmit={(vals) => {
-          agregarMovimiento(vals)
-          navigate('/')
-        }}
-        onCancel={() => navigate('/')}
-      />
+    <div className="nuevo-movimiento">
+      <h2>Agregar nuevo movimiento</h2>
+      <MovimientoForm />
     </div>
-  )
+  );
 }
