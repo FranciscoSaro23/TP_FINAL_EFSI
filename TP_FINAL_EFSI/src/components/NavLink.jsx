@@ -1,14 +1,15 @@
-import React from 'react'
+import { NavLink as RouterLink } from "react-router-dom";
 
 export default function NavLink({ to, children }) {
-  const onClick = (e) => {
-    e.preventDefault()
-    window.history.pushState({}, '', to)
-    window.dispatchEvent(new PopStateEvent('popstate'))
-  }
   return (
-    <a href={to} onClick={onClick} className="navlink">
+    <RouterLink
+      to={to}
+      className={({ isActive }) =>
+        isActive ? "btn active" : "btn"
+      }
+    >
       {children}
-    </a>
-  )
+    </RouterLink>
+  );
 }
+  
