@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import useLocalStorage from './hooks/useLocalStorage';
-import Listado from './pages/Listado';
-import { MovimientosProvider } from './context/MovimientosContext';
+import { Routes, Route } from "react-router-dom";
+import Layout from "./Layouts/Layout";
+import MovimientosProvider from "./context/MovimientosContext";
+import Resumen from "./pages/Resumen";
+import Nuevo from "./pages/Nuevo";
+import Listado from "./pages/Listado";
 
 const App = () => {
   const [theme, setTheme] = useLocalStorage('theme', 'light'); 
