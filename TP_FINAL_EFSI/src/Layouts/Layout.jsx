@@ -1,26 +1,21 @@
 import { useState, useEffect } from "react";
 import Header from "../components/Header";
 import "./Layout.css";
-
-export default function Layout({ children }) {
-  const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("theme") === "dark"
-  );
-
-  const toggleTheme = () => {
-    const newTheme = darkMode ? "light" : "dark";
-    setDarkMode(!darkMode);
-    localStorage.setItem("theme", newTheme);
-  };
-
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", darkMode);
-  }, [darkMode]);
-
+import { ThemeProvider, useTheme } from "../context/ThemeContext";
+function LayoutContent({ children }) {
+  const { darkMode } = useTheme();
   return (
     <div className={`layout ${darkMode ? "dark" : "light"}`}>
-      <Header toggleTheme={toggleTheme} darkMode={darkMode} />
+      <Header />
       <main className="main-content">{children}</main>
     </div>
+  );
+}
+
+export default function Layout({ children }) {
+  return (
+    <ThemeProvider>
+      <LayoutContent>{children}</LayoutContent>
+    </ThemeProvider>
   );
 }
