@@ -58,19 +58,19 @@ const Resumen = () => {
   }, [movimientos])
 
   return (
-    <div>
+    <div className="page-centered">
       <h2>Resumen</h2>
       <p>💰 Ingresos: ${ingresos}</p>
       <p>💸 Gastos: ${gastos}</p>
       <hr />
       <h3>Balance total: {balance >= 0 ? `✅ $${balance}` : `🔴 -$${Math.abs(balance)}`}</h3>
 
-      <div style={{ maxWidth: 480 }}>
+      <div style={{ width: '100%', maxWidth: 960 }}>
         <h4>Gastos por categoría</h4>
         <Pie data={pieData} />
       </div>
 
-      <div style={{ maxWidth: 720 }}>
+      <div style={{ width: '100%', maxWidth: 1200 }}>
         <h4>Evolución mensual</h4>
         <Line data={monthlyData} />
       </div>

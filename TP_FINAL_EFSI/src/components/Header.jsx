@@ -1,7 +1,9 @@
 import "./Header.css";
 import NavLink from "./NavLink";
+import { useTheme } from "../context/ThemeContext";
 
-export default function Header({ toggleTheme, darkMode }) {
+export default function Header() {
+  const { toggleTheme, darkMode } = useTheme();
   return (
     <header className="header">
       <h1>Mi Presupuesto</h1>

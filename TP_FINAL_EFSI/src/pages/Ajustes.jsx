@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useMovimientos } from '../context/MovimientosContext'
+import { useTheme } from '../context/ThemeContext'
 
 const MOCK = [
   { id: 101, tipo: 'ingreso', monto: 5000, categoria: 'Sueldo', descripcion: 'Pago mensual', fecha: '2025-10-01' },
@@ -8,33 +9,21 @@ const MOCK = [
 ]
 
 const Ajustes = () => {
-  const { } = useMovimientos()
-  const [dark, setDark] = useState(localStorage.getItem('theme') === 'dark')
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', dark)
-  }, [dark])
+  const { setMovimientos } = useMovimientos()
+  const { darkMode, toggleTheme } = useTheme()
 
   const borrarDatos = () => {
-    localStorage.removeItem('movimientos')
+    setMovimientos([])
     alert('Todos los movimientos fueron eliminados ❌')
-    window.location.reload()
   }
 
   const restaurarMock = () => {
-    localStorage.setItem('movimientos', JSON.stringify(MOCK))
+    setMovimientos(MOCK)
     alert('Datos iniciales restaurados ✅')
-    window.location.reload()
-  }
-
-  const toggleTheme = () => {
-    const newTheme = dark ? 'light' : 'dark'
-    setDark(!dark)
-    localStorage.setItem('theme', newTheme)
   }
 
   return (
-    <div>
+    <div className="page-centered">
       <h2>Ajustes</h2>
       <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
         <button onClick={borrarDatos}>Borrar todos los movimientos</button>
@@ -42,7 +31,7 @@ const Ajustes = () => {
       </div>
       <div>
         <label>
-          <input type="checkbox" checked={dark} onChange={toggleTheme} /> Tema oscuro
+          <input type="checkbox" checked={darkMode} onChange={toggleTheme} /> Tema oscuro
         </label>
       </div>
     </div>

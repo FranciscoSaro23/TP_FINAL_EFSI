@@ -42,7 +42,7 @@ export default function MovimientosProvider({ children }) {
 
   return (
     <MovimientosContext.Provider
-      value={{ movimientos, agregarMovimiento, eliminarMovimiento, editarMovimiento, balanceTotal }}
+      value={{ movimientos, agregarMovimiento, eliminarMovimiento, editarMovimiento, balanceTotal, setMovimientos }}
     >
       {children}
     </MovimientosContext.Provider>
