@@ -58,7 +58,7 @@ const Resumen = () => {
   }, [movimientos])
 
   return (
-    <div>
+    <div className="page-centered">
       <h2>Resumen</h2>
       <p>💰 Ingresos: ${ingresos}</p>
       <p>💸 Gastos: ${gastos}</p>

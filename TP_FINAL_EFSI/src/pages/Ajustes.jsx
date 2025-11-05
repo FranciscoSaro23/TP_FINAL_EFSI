@@ -9,23 +9,21 @@ const MOCK = [
 ]
 
 const Ajustes = () => {
-  const { } = useMovimientos()
+  const { setMovimientos } = useMovimientos()
   const { darkMode, toggleTheme } = useTheme()
 
   const borrarDatos = () => {
-    localStorage.removeItem('movimientos')
+    setMovimientos([])
     alert('Todos los movimientos fueron eliminados ❌')
-    window.location.reload()
   }
 
   const restaurarMock = () => {
-    localStorage.setItem('movimientos', JSON.stringify(MOCK))
+    setMovimientos(MOCK)
     alert('Datos iniciales restaurados ✅')
-    window.location.reload()
   }
 
   return (
-    <div>
+    <div className="page-centered">
       <h2>Ajustes</h2>
       <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
         <button onClick={borrarDatos}>Borrar todos los movimientos</button>

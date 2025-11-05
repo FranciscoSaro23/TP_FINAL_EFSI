@@ -8,7 +8,7 @@ export default function Nuevo() {
   const navigate = useNavigate()
 
   return (
-    <div className="nuevo-movimiento" style={{ width: '100%', maxWidth: 960 }}>
+    <div className="nuevo-movimiento page-centered">
       <h2>Agregar nuevo movimiento</h2>
       <p>Complete el formulario para registrar un ingreso o gasto.</p>
       <MovimientoForm
